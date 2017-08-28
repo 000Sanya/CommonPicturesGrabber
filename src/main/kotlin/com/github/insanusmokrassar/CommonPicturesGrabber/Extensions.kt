@@ -24,6 +24,8 @@ fun IObject<Any>.filterTags(vararg tags: String): Boolean {
             is IObject<*> -> (or as? IObject<Any>)?.let { orResult = orResult.or(it.filterTags(*tags)) }
             else -> orResult = orResult.or(tags.contains(or))
         }
+    } else {
+        orResult = true
     }
     var notResult = true
     if (keys().contains(notFilterName)) {
@@ -33,6 +35,8 @@ fun IObject<Any>.filterTags(vararg tags: String): Boolean {
             is IObject<*> -> (not as? IObject<Any>)?.let { notResult = notResult.and(it.filterTags(*tags)) }
             else -> notResult = notResult.and(tags.contains(not))
         }
+    } else {
+        notResult = false
     }
     return andResult.and(orResult).and(!notResult)
 }
