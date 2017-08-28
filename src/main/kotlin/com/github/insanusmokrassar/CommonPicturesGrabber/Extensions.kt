@@ -7,36 +7,32 @@ val orFilterName = "or"
 val notFilterName = "not"
 
 fun IObject<Any>.filterTags(vararg tags: String): Boolean {
-    var andResult = true
+    var result = true
     if (keys().contains(andFilterName)) {
         val and = get<Any>(andFilterName)
         when(and) {
-            is List<*> -> (and as? List<Any>)?.let { andResult = andResult.and(it.andFilter(*tags)) }
-            is IObject<*> -> (and as? IObject<Any>)?.let { andResult = andResult.and(it.filterTags(*tags)) }
-            else -> andResult = andResult.and(tags.contains(and))
+            is List<*> -> (and as? List<Any>)?.let { result = result.and(it.andFilter(*tags)) }
+            is IObject<*> -> (and as? IObject<Any>)?.let { result = result.and(it.filterTags(*tags)) }
+            else -> result = result.and(tags.contains(and))
         }
     }
-    var orResult = true
     if (keys().contains(orFilterName)) {
         val or = get<Any>(orFilterName)
         when(or) {
-            is List<*> -> (or as? List<Any>)?.let { orResult = orResult.and(it.orFilter(*tags)) }
-            is IObject<*> -> (or as? IObject<Any>)?.let { orResult = orResult.and(it.filterTags(*tags)) }
-            else -> orResult = orResult.and(tags.contains(or))
+            is List<*> -> (or as? List<Any>)?.let { result = result.and(it.orFilter(*tags)) }
+            is IObject<*> -> (or as? IObject<Any>)?.let { result = result.and(it.filterTags(*tags)) }
+            else -> result = result.and(tags.contains(or))
         }
     }
-    var notResult = true
     if (keys().contains(notFilterName)) {
         val not = get<Any>(notFilterName)
         when(not) {
-            is List<*> -> (not as? List<Any>)?.let { notResult = notResult.and(it.andFilter(*tags)) }
-            is IObject<*> -> (not as? IObject<Any>)?.let { notResult = notResult.and(it.filterTags(*tags)) }
-            else -> notResult = notResult.and(tags.contains(not))
+            is List<*> -> (not as? List<Any>)?.let { result = result.and(!it.andFilter(*tags)) }
+            is IObject<*> -> (not as? IObject<Any>)?.let { result = result.and(!it.filterTags(*tags)) }
+            else -> result = result.and(!tags.contains(not))
         }
-    } else {
-        notResult = false
     }
-    return andResult.and(orResult).and(!notResult)
+    return result
 }
 
 fun List<Any>.andFilter(vararg tags: String): Boolean {
