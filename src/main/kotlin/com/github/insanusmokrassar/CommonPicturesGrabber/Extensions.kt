@@ -20,7 +20,7 @@ fun IObject<Any>.filterTags(vararg tags: String): Boolean {
     if (keys().contains(orFilterName)) {
         val or = get<Any>(orFilterName)
         when(or) {
-            is List<*> -> (or as? List<Any>)?.let { orResult = orResult.or(it.andFilter(*tags)) }
+            is List<*> -> (or as? List<Any>)?.let { orResult = orResult.or(it.orFilter(*tags)) }
             is IObject<*> -> (or as? IObject<Any>)?.let { orResult = orResult.or(it.filterTags(*tags)) }
             else -> orResult = orResult.or(tags.contains(or))
         }
