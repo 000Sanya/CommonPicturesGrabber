@@ -29,7 +29,7 @@ fun IObject<Any>.filterTags(vararg tags: String): Boolean {
     }
     var notResult = true
     if (keys().contains(notFilterName)) {
-        val not = get<Any>(orFilterName)
+        val not = get<Any>(notFilterName)
         when(not) {
             is List<*> -> (not as? List<Any>)?.let { notResult = notResult.and(it.andFilter(*tags)) }
             is IObject<*> -> (not as? IObject<Any>)?.let { notResult = notResult.and(it.filterTags(*tags)) }
