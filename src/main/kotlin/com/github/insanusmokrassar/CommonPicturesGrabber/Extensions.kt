@@ -16,16 +16,14 @@ fun IObject<Any>.filterTags(vararg tags: String): Boolean {
             else -> andResult = andResult.and(tags.contains(and))
         }
     }
-    var orResult = false
+    var orResult = true
     if (keys().contains(orFilterName)) {
         val or = get<Any>(orFilterName)
         when(or) {
-            is List<*> -> (or as? List<Any>)?.let { orResult = orResult.or(it.orFilter(*tags)) }
-            is IObject<*> -> (or as? IObject<Any>)?.let { orResult = orResult.or(it.filterTags(*tags)) }
-            else -> orResult = orResult.or(tags.contains(or))
+            is List<*> -> (or as? List<Any>)?.let { orResult = orResult.and(it.orFilter(*tags)) }
+            is IObject<*> -> (or as? IObject<Any>)?.let { orResult = orResult.and(it.filterTags(*tags)) }
+            else -> orResult = orResult.and(tags.contains(or))
         }
-    } else {
-        orResult = true
     }
     var notResult = true
     if (keys().contains(notFilterName)) {
