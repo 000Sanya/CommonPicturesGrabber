@@ -1,12 +1,9 @@
 package com.github.insanusmokrassar.CommonPicturesGrabber.core.interfaces
 
+import com.github.insanusmokrassar.IObjectK.interfaces.IObject
 import java.net.URI
 
 interface PicturesServer {
-
     @Throws(IllegalStateException::class)
-    fun nextImage(vararg tags: String): URI
-
-    @Throws(IllegalStateException::class)
-    fun close()
+    fun nextImage(filter: IObject<Any>): URI
 }

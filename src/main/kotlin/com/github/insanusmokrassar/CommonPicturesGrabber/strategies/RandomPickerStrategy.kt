@@ -25,11 +25,12 @@ class RandomPickerStrategy(params: IObject<Any>) : IOCStrategy {
     private val ioc = getOrCreateIOC(params.get(iocNameField))
     private val strategyName = params.get<String>(serversStrategyNameField)
 
+    /**
+     * Await first args as filter IObject<Any>
+     */
     override fun <T : Any> getInstance(vararg args: Any): T {
         val servers = ioc.resolve<List<PicturesServer>>(strategyName)
         return servers[random.nextInt(servers.size)]
-                .nextImage(
-                        *(args.filter { it is String }.map { it as String }.toTypedArray())
-                ) as T
+                .nextImage(args[0] as IObject<Any>) as T
     }
 }
